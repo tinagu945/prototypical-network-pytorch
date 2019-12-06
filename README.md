@@ -1,4 +1,5 @@
 # Prototypical Network
+Adopted without change.
 
 A re-implementation of [Prototypical Network](https://arxiv.org/abs/1703.05175).
 
