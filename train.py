@@ -5,10 +5,11 @@ import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 
-from mini_imagenet import MiniImageNet
+from cub200 import CUB200 as MiniImageNet
+# from mini_imagenet import MiniImageNet
 from samplers import CategoriesSampler
 from convnet import Convnet
-from utils import pprint, set_gpu, ensure_path, Averager, Timer, count_acc, euclidean_metric
+from proto_utils import pprint, set_gpu, ensure_path, Averager, Timer, count_acc, euclidean_metric
 
 
 if __name__ == '__main__':
@@ -16,10 +17,10 @@ if __name__ == '__main__':
     parser.add_argument('--max-epoch', type=int, default=200)
     parser.add_argument('--save-epoch', type=int, default=20)
     parser.add_argument('--shot', type=int, default=1)
-    parser.add_argument('--query', type=int, default=15)
+    parser.add_argument('--query', type=int, default=10)
     parser.add_argument('--train-way', type=int, default=30)
     parser.add_argument('--test-way', type=int, default=5)
-    parser.add_argument('--save-path', default='./save/proto-1')
+    parser.add_argument('--save-path', default='./save/proto-2')
     parser.add_argument('--gpu', default='0')
     args = parser.parse_args()
     pprint(vars(args))
@@ -75,6 +76,7 @@ if __name__ == '__main__':
 
             label = torch.arange(args.train_way).repeat(args.query)
             label = label.type(torch.cuda.LongTensor)
+            import pdb;pdb.set_trace()
 
             logits = euclidean_metric(model(data_query), proto)
             loss = F.cross_entropy(logits, label)
@@ -90,6 +92,8 @@ if __name__ == '__main__':
             optimizer.step()
             
             proto = None; logits = None; loss = None
+#             if i==1:
+#                 break
 
         tl = tl.item()
         ta = ta.item()
